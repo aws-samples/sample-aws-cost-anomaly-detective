@@ -1,0 +1,237 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'AWS Cost Anomaly Detective - AI-powered cost monitoring with Amazon Bedrock'
+
+Parameters:
+  AlertEmail:
+    Type: String
+    Description: Email address for cost anomaly alerts
+    AllowedPattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+  SlackWebhookUrl:
+    Type: String
+    Description: (Optional) Slack webhook URL for alerts
+    Default: ''
+
+  ThresholdPercentage:
+    Type: Number
+    Description: Minimum cost spike percentage to trigger alert
+    Default: 50
+    MinValue: 10
+    MaxValue: 500
+
+  ScheduleExpression:
+    Type: String
+    Description: How often to run anomaly detection
+    Default: 'rate(1 hour)'
+    AllowedValues:
+      - 'rate(15 minutes)'
+      - 'rate(1 hour)'
+      - 'rate(6 hours)'
+      - 'rate(1 day)'
+
+Conditions:
+  HasSlackWebhook: !Not [!Equals [!Ref SlackWebhookUrl, '']]
+
+Resources:
+  # DynamoDB Table for anomaly history
+  AnomalyHistoryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: cost-anomalies
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1PK
+          AttributeType: S
+        - AttributeName: GSI1SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          KeySchema:
+            - AttributeName: GSI1PK
+              KeyType: HASH
+            - AttributeName: GSI1SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+  # S3 Bucket for detailed reports
+  ReportsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'cost-detective-reports-${AWS::AccountId}'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteOldReports
+            Status: Enabled
+            ExpirationInDays: 90
+
+  # SNS Topic for email alerts
+  AlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: Cost Anomaly Alerts
+      Subscriptions:
+        - Endpoint: !Ref AlertEmail
+          Protocol: email
+
+  # Lambda Execution Role
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: CostDetectivePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # Cost Explorer
+              - Effect: Allow
+                Action:
+                  - ce:GetCostAndUsage
+                  - ce:GetCostForecast
+                Resource: '*'
+
+              # CloudTrail
+              - Effect: Allow
+                Action:
+                  - cloudtrail:LookupEvents
+                Resource: '*'
+
+              # AWS Config
+              - Effect: Allow
+                Action:
+                  - config:DescribeConfigurationRecorders
+                  - config:GetResourceConfigHistory
+                Resource: '*'
+
+              # CloudWatch Logs
+              - Effect: Allow
+                Action:
+                  - logs:StartQuery
+                  - logs:GetQueryResults
+                Resource: '*'
+
+              # DynamoDB
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:Query
+                Resource:
+                  - !GetAtt AnomalyHistoryTable.Arn
+                  - !Sub '${AnomalyHistoryTable.Arn}/index/*'
+
+              # S3
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                Resource: !Sub '${ReportsBucket.Arn}/*'
+
+              # SNS
+              - Effect: Allow
+                Action:
+                  - sns:Publish
+                Resource: !Ref AlertTopic
+
+              # Bedrock
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                Resource: !Sub 'arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.claude-3-5-sonnet-20241022-v2:0'
+
+  # Lambda Function (deployment package required)
+  CostDetectiveFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: cost-detective
+      Runtime: python3.12
+      Handler: lambda_function.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 300
+      MemorySize: 1024
+      Environment:
+        Variables:
+          DYNAMODB_TABLE_NAME: !Ref AnomalyHistoryTable
+          S3_BUCKET_NAME: !Ref ReportsBucket
+          SNS_TOPIC_ARN: !Ref AlertTopic
+          SLACK_WEBHOOK_URL: !If [HasSlackWebhook, !Ref SlackWebhookUrl, '']
+          THRESHOLD_PERCENTAGE: !Ref ThresholdPercentage
+          BEDROCK_REGION: !Ref AWS::Region
+          LOG_LEVEL: INFO
+      Code:
+        ZipFile: |
+          # Placeholder - replace with actual deployment package
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': 'Deploy code package'}
+
+  # EventBridge Rule for scheduled execution
+  ScheduleRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Trigger Cost Anomaly Detective on schedule
+      ScheduleExpression: !Ref ScheduleExpression
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt CostDetectiveFunction.Arn
+          Id: CostDetectiveTarget
+
+  # Permission for EventBridge to invoke Lambda
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref CostDetectiveFunction
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt ScheduleRule.Arn
+
+Outputs:
+  LambdaFunctionArn:
+    Description: Lambda function ARN
+    Value: !GetAtt CostDetectiveFunction.Arn
+
+  DynamoDBTableName:
+    Description: DynamoDB table name
+    Value: !Ref AnomalyHistoryTable
+
+  S3BucketName:
+    Description: S3 bucket for reports
+    Value: !Ref ReportsBucket
+
+  SNSTopicArn:
+    Description: SNS topic ARN
+    Value: !Ref AlertTopic
+
+  DeploymentCommand:
+    Description: Command to deploy Lambda code
+    Value: !Sub |
+      # Package and deploy:
+      cd src && pip install -r ../requirements.txt -t . && zip -r ../function.zip .
+      aws lambda update-function-code --function-name ${CostDetectiveFunction} --zip-file fileb://../function.zip

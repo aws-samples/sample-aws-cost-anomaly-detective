@@ -1,0 +1,60 @@
+# AWS Cost Anomaly Detective Configuration
+# Copy this file to config.yaml and customize for your environment
+
+# Analysis Settings
+analysis:
+  lookback_hours: 1                    # How far back to check for anomalies
+  threshold_percentage: 50             # Minimum spike % to trigger alert (50 = 50% increase)
+  min_cost_threshold: 1.0              # Ignore services costing less than this ($1.00)
+  dedupe_hours: 24                     # Don't re-alert on same service within X hours
+  history_lookback_days: 30            # How many days of history to use for context
+
+# Amazon Bedrock Settings
+bedrock:
+  region: us-east-1                    # Bedrock region
+  model_id: anthropic.claude-3-5-sonnet-20241022-v2:0  # Claude model
+  max_tokens: 4000                     # Max response length
+  temperature: 0.2                     # Lower = more deterministic
+
+# Storage Settings
+storage:
+  dynamodb_table_name: cost-anomalies  # DynamoDB table for history
+  s3_bucket_name: cost-detective-reports  # S3 bucket for detailed reports
+
+# Alerting Settings
+alerting:
+  sns_topic_arn: arn:aws:sns:us-east-1:123456789012:cost-alerts  # SNS topic for email
+  slack_webhook_url: https://hooks.slack.com/services/YOUR/WEBHOOK/URL  # Slack webhook
+
+  # Alert routing rules (optional)
+  rules:
+    - service: "AWS Lambda"
+      threshold: 30                    # Override threshold for Lambda
+      severity_override: "High"
+
+    - service: "Amazon RDS"
+      threshold: 100                   # More lenient for RDS
+      cooldown_hours: 6                # Don't alert more than once per 6 hours
+
+# AWS Settings
+aws:
+  region: us-east-1                    # Primary AWS region
+
+# Multi-Account Settings (optional)
+multi_account:
+  enabled: false                       # Enable cross-account monitoring
+  role_name: CostDetectiveRole         # IAM role to assume in each account
+  account_ids:                         # List of account IDs to monitor
+    - "123456789012"
+    - "210987654321"
+
+# Logging
+logging:
+  level: INFO                          # DEBUG, INFO, WARNING, ERROR
+  format: json                         # json or text
+
+# Advanced Options
+advanced:
+  enable_auto_remediation: false       # Auto-apply AI-generated fixes
+  require_approval: true               # Require Slack approval before remediation
+  enable_forecasting: false            # Generate cost forecasts

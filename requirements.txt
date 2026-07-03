@@ -1,0 +1,11 @@
+# AWS SDK
+boto3>=1.34.0
+botocore>=1.34.0
+
+# Data handling
+pyyaml>=6.0.1
+
+# Optional: Local testing
+moto>=5.0.0  # AWS service mocking
+pytest>=8.0.0
+pytest-cov>=4.1.0
