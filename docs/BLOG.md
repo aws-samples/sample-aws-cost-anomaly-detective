@@ -356,8 +356,7 @@ That's the power of AI in operations.
 
 ## Feedback & Questions
 
-- **GitHub Issues**: [Report bugs or request features](https://github.com/chezsal12/aws-cost-anomaly-detective/issues)
-- **Discussions**: [Ask questions](https://github.com/chezsal12/aws-cost-anomaly-detective/discussions)
+- **GitHub Issues**: [Report bugs, request features, or ask questions](https://github.com/chezsal12/aws-cost-anomaly-detective/issues)
 
 ---
 

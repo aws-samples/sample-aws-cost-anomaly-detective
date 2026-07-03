@@ -315,8 +315,7 @@ Built by AWS Solutions Architects to showcase:
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/chezsal12/aws-cost-anomaly-detective/issues)
-- **Questions**: [GitHub Discussions](https://github.com/chezsal12/aws-cost-anomaly-detective/discussions)
+- **Issues & Questions**: [GitHub Issues](https://github.com/chezsal12/aws-cost-anomaly-detective/issues)
 - **AWS Support**: For production issues, contact AWS Support
 
 ---
