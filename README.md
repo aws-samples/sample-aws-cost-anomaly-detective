@@ -277,7 +277,6 @@ sam local invoke CostDetectiveFunction --event examples/test-event.json
 
 - **Workshop**: [Deploy Your Cost Detective in 60 Minutes](docs/WORKSHOP.md)
 - **Blog Post**: [Building AI-Powered Cost Intelligence](docs/BLOG.md)
-- **Architecture Deep Dive**: [Technical Documentation](architecture.md)
 
 ---
 
