@@ -27,7 +27,7 @@
 ### Core Implementation (src/)
 - [x] **lambda_function.py** (360 lines) - Main orchestration handler
 - [x] **cost_analyzer.py** (220 lines) - Cost Explorer integration
-- [x] **bedrock_client.py** (280 lines) - AI analysis with Claude 3.5 Sonnet
+- [x] **bedrock_client.py** (280 lines) - AI analysis with Claude Sonnet 4.6
 - [x] **context_enricher.py** (200 lines) - CloudTrail/Config/CloudWatch correlation
 - [x] **alerting.py** (270 lines) - SNS/Slack notifications
 - [x] **utils.py** (120 lines) - Helper functions & DynamoDB operations

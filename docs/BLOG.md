@@ -8,7 +8,7 @@
 
 ## At a Glance
 
-Traditional AWS cost alerts tell you *what* happened. We built a system using Amazon Bedrock (Claude 3.5 Sonnet) that tells you *why* it happened, *who* caused it, and *how* to fix it. Open source, production-ready, ~$30/month to run.
+Traditional AWS cost alerts tell you *what* happened. We built a system using Amazon Bedrock (Claude Sonnet 4.6) that tells you *why* it happened, *who* caused it, and *how* to fix it. Open source, production-ready, ~$30/month to run.
 
 **[GitHub Repository →](https://github.com/chezsal12/aws-cost-anomaly-detective)**
 
@@ -78,7 +78,7 @@ Lambda Function
     ├─→ AWS Config (configuration drift)
     ├─→ CloudWatch (metrics & logs)
     ↓
-Amazon Bedrock (Claude 3.5 Sonnet)
+Amazon Bedrock (Claude Sonnet 4.6)
     ↓
     ├─→ Root cause analysis
     ├─→ Remediation recommendations
@@ -217,7 +217,7 @@ def analyze_with_bedrock(anomaly, context):
     prompt = build_analysis_prompt(anomaly, context)
     
     response = bedrock.invoke_model(
-        modelId='anthropic.claude-3-5-sonnet-20241022-v2:0',
+        modelId='anthropic.claude-sonnet-4-6',
         body=json.dumps({
             'anthropic_version': 'bedrock-2023-05-31',
             'max_tokens': 4000,

@@ -11,7 +11,7 @@
 ### Core Implementation
 - [x] **lambda_function.py** (360 lines) - Main orchestration handler
 - [x] **cost_analyzer.py** (220 lines) - Cost Explorer integration
-- [x] **bedrock_client.py** (280 lines) - AI analysis with Claude 3.5 Sonnet
+- [x] **bedrock_client.py** (280 lines) - AI analysis with Claude Sonnet 4.6
 - [x] **architecture.md** (500+ lines) - Comprehensive technical documentation
 
 ### AWS-Samples Compliance

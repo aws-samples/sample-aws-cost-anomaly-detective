@@ -18,7 +18,7 @@
 ## Business Justification
 
 ### Purpose
-Provide customers with a production-ready sample demonstrating how to build AI-powered cost monitoring using Amazon Bedrock (Claude 3.5 Sonnet) integrated with AWS Cost Management services.
+Provide customers with a production-ready sample demonstrating how to build AI-powered cost monitoring using Amazon Bedrock (Claude Sonnet 4.6) integrated with AWS Cost Management services.
 
 ### Target Audience
 - FinOps teams implementing cost governance
@@ -124,7 +124,7 @@ Provide customers with a production-ready sample demonstrating how to build AI-p
 **Repository Settings**:
 - Organization: `aws-samples`
 - Name: `aws-cost-anomaly-detective`
-- Description: "AI-powered AWS cost anomaly detection using Amazon Bedrock and Claude 3.5 Sonnet"
+- Description: "AI-powered AWS cost anomaly detection using Amazon Bedrock and Claude Sonnet 4.6"
 - Visibility: Public
 - Topics: `aws`, `bedrock`, `claude`, `cost-optimization`, `finops`, `lambda`, `serverless`, `ai`, `ml`
 - Branch protection: `main` (require PR reviews)

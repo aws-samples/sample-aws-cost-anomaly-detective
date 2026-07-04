@@ -59,7 +59,7 @@ def load_config() -> Dict[str, Any]:
         'bedrock_region': os.environ.get('BEDROCK_REGION', 'us-east-1'),
         'bedrock_model_id': os.environ.get(
             'BEDROCK_MODEL_ID',
-            'anthropic.claude-3-5-sonnet-20241022-v2:0'
+            'anthropic.claude-sonnet-4-6'
         ),
 
         # Storage

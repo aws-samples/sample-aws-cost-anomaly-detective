@@ -2,7 +2,7 @@
 
 **AI-Powered Cost Anomaly Detection with Amazon Bedrock**
 
-Automatically detect, analyze, and remediate AWS cost spikes using Claude 3.5 Sonnet. Goes beyond simple thresholds to provide intelligent root cause analysis, contextual explanations, and actionable recommendations.
+Automatically detect, analyze, and remediate AWS cost spikes using Claude Sonnet 4.6. Goes beyond simple thresholds to provide intelligent root cause analysis, contextual explanations, and actionable recommendations.
 
 [![License: MIT-0](https://img.shields.io/badge/License-MIT--0-yellow.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
@@ -118,7 +118,7 @@ min_cost_threshold: 1.0            # Ignore services under $1
 
 # Bedrock settings
 bedrock_region: us-east-1
-bedrock_model_id: anthropic.claude-3-5-sonnet-20241022-v2:0
+bedrock_model_id: anthropic.claude-sonnet-4-6
 
 # Storage
 dynamodb_table_name: cost-anomalies

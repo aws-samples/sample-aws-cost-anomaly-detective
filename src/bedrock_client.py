@@ -1,7 +1,7 @@
 """
 Amazon Bedrock AI Analyzer
 
-Uses Claude 3.5 Sonnet to analyze cost anomalies and provide intelligent
+Uses Claude Sonnet 4.6 to analyze cost anomalies and provide intelligent
 root cause analysis and remediation recommendations.
 """
 
@@ -31,7 +31,7 @@ class BedrockAnalyzer:
         )
         self.model_id = config.get(
             'bedrock_model_id',
-            'anthropic.claude-3-5-sonnet-20241022-v2:0'
+            'anthropic.claude-sonnet-4-6'
         )
 
     def analyze(
@@ -221,7 +221,7 @@ Be specific and actionable. Reference actual resource IDs, timestamps, and users
         Returns:
             Bedrock response
         """
-        # Claude 3.5 Sonnet request format
+        # Claude Sonnet 4.6 request format
         request_body = {
             "anthropic_version": "bedrock-2023-05-31",
             "max_tokens": 4000,

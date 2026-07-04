@@ -16,7 +16,7 @@ git config user.name "Your Name"
 git add -A
 git commit -m "Initial commit: AWS Cost Anomaly Detective
 
-AI-powered cost anomaly detection using Amazon Bedrock (Claude 3.5 Sonnet).
+AI-powered cost anomaly detection using Amazon Bedrock (Claude Sonnet 4.6).
 
 Features:
 - Real-time cost spike detection
