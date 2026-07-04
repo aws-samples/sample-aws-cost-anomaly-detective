@@ -57,6 +57,8 @@ EventBridge (hourly) → Lambda → AI Analysis → Alerts
 
 ## 🚀 Quick Start
 
+> **Using AWS Organizations?** See our [Multi-Account Deployment Guide](docs/MULTI_ACCOUNT_DEPLOYMENT.md) for deploying across multiple accounts.
+
 ### Prerequisites
 
 - AWS Account with Bedrock enabled
