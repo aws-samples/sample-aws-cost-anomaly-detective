@@ -1,0 +1,127 @@
+{
+  "anomaly_id": "ANOM-2026-07-03-001",
+  "detected_at": "2026-07-03T14:30:00Z",
+  "service": "Amazon RDS",
+  "account_id": "123456789012",
+  "account_name": "Production",
+  "region": "us-east-1",
+
+  "cost_data": {
+    "current_cost": 450.75,
+    "baseline_cost": 180.25,
+    "cost_change": 270.50,
+    "spike_percentage": 150.1,
+    "currency": "USD",
+    "time_window": "1 hour"
+  },
+
+  "context": {
+    "cloudtrail_events": [
+      {
+        "event_time": "2026-07-03T14:15:23Z",
+        "event_name": "ModifyDBInstance",
+        "user": "john.doe@company.com",
+        "source_ip": "10.0.1.50",
+        "resource": "prod-database-1",
+        "changes": {
+          "DBInstanceClass": {
+            "before": "db.t3.large",
+            "after": "db.r5.2xlarge"
+          }
+        }
+      }
+    ],
+
+    "config_changes": [
+      {
+        "change_time": "2026-07-03T14:15:25Z",
+        "resource_type": "AWS::RDS::DBInstance",
+        "resource_id": "prod-database-1",
+        "change_type": "UPDATE",
+        "configuration_diff": {
+          "instance_class": {
+            "old": "db.t3.large",
+            "new": "db.r5.2xlarge"
+          },
+          "allocated_storage": {
+            "old": 100,
+            "new": 100
+          }
+        }
+      }
+    ],
+
+    "cloudwatch_metrics": {
+      "cpu_utilization": {
+        "average": 15.2,
+        "max": 28.5,
+        "p95": 24.1
+      },
+      "database_connections": {
+        "average": 12,
+        "max": 45
+      },
+      "read_iops": {
+        "average": 150,
+        "max": 300
+      }
+    }
+  },
+
+  "ai_analysis": {
+    "root_cause": "Database instance prod-database-1 was manually upgraded from db.t3.large to db.r5.2xlarge at 2:15 PM by john.doe@company.com. CloudWatch metrics show the instance was significantly over-provisioned with average CPU at 15% and max at 28%, suggesting the upgrade was unnecessary.",
+
+    "severity": "High",
+
+    "confidence_score": 95,
+
+    "remediation_steps": [
+      {
+        "step": 1,
+        "action": "Review the reason for the instance upgrade with john.doe@company.com",
+        "urgency": "Immediate"
+      },
+      {
+        "step": 2,
+        "action": "Revert to db.t3.large if the upgrade was not required for upcoming workload",
+        "urgency": "High",
+        "expected_savings": "$270/month"
+      },
+      {
+        "step": 3,
+        "action": "Implement approval workflow for production database changes >$100/month",
+        "urgency": "Medium"
+      },
+      {
+        "step": 4,
+        "action": "Enable RDS Performance Insights to monitor actual utilization before future upgrades",
+        "urgency": "Low"
+      }
+    ],
+
+    "estimated_savings": "$3,240/year if reverted to db.t3.large",
+
+    "executive_summary": "An unnecessary database upgrade increased costs by 150%. The instance was over-provisioned with low CPU utilization (15% average). Reverting the change would save $3,240 annually with no performance impact.",
+
+    "cloudformation_remediation": "# Revert RDS instance to previous configuration\nResources:\n  ProdDatabase:\n    Type: AWS::RDS::DBInstance\n    Properties:\n      DBInstanceIdentifier: prod-database-1\n      DBInstanceClass: db.t3.large\n      # Estimated savings: $270/month"
+  },
+
+  "forecast": {
+    "monthly_projection": 13522.50,
+    "if_reverted": 5022.50,
+    "potential_savings": 8500.00
+  },
+
+  "historical_context": {
+    "previous_anomalies_this_service": 2,
+    "last_anomaly_date": "2026-06-15T10:00:00Z",
+    "pattern": "This is the third cost spike for this RDS instance in 60 days, suggesting a need for better change management controls."
+  },
+
+  "metadata": {
+    "analysis_model": "anthropic.claude-haiku-4-5-20251001-v1:0",
+    "analysis_duration_ms": 2340,
+    "report_version": "1.0",
+    "generated_by": "AWS Cost Anomaly Detective v1.0"
+  }
+}
