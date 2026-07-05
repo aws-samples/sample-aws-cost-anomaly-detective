@@ -165,7 +165,9 @@ Resources:
               - Effect: Allow
                 Action:
                   - bedrock:InvokeModel
-                Resource: !Sub 'arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.claude-sonnet-4-6'
+                Resource:
+                  - !Sub 'arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.claude-sonnet-4-6'
+                  - !Sub 'arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.*'
 
   # Lambda Function (deployment package required)
   CostDetectiveFunction:

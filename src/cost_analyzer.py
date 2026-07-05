@@ -94,8 +94,20 @@ class CostAnalyzer:
         start_time = end_time - timedelta(hours=duration_hours)
 
         # Format for Cost Explorer API (YYYY-MM-DD)
+        # Cost Explorer requires start < end, so ensure at least 1 day difference
         start_date = start_time.strftime('%Y-%m-%d')
         end_date = end_time.strftime('%Y-%m-%d')
+
+        # If dates are the same, adjust to previous day for start
+        if start_date == end_date:
+            start_time = start_time - timedelta(days=1)
+            start_date = start_time.strftime('%Y-%m-%d')
+
+        # Cost Explorer requires end date to be at least 1 day after start
+        # If still the same (edge case), move end forward
+        if start_date >= end_date:
+            end_time = start_time + timedelta(days=1)
+            end_date = end_time.strftime('%Y-%m-%d')
 
         logger.debug(f"Fetching costs from {start_date} to {end_date}")
 

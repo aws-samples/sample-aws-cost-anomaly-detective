@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Cross-account role for deploying Cost Anomaly Detective from account 816848895497'
+
+Parameters:
+  TrustedAccountId:
+    Type: String
+    Default: '816848895497'
+    Description: AWS account ID that can assume this role
+
+Resources:
+  DeploymentRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: CostDetectiveDeploymentRole
+      Description: Allows deployment of Cost Anomaly Detective from trusted account
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${TrustedAccountId}:root'
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                sts:ExternalId: 'cost-detective-deploy-2026'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/PowerUserAccess
+      Policies:
+        - PolicyName: IAMPassRoleForLambda
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:CreateRole
+                  - iam:DeleteRole
+                  - iam:PutRolePolicy
+                  - iam:DeleteRolePolicy
+                  - iam:AttachRolePolicy
+                  - iam:DetachRolePolicy
+                  - iam:GetRole
+                  - iam:GetRolePolicy
+                  - iam:PassRole
+                  - iam:CreatePolicy
+                  - iam:DeletePolicy
+                  - iam:GetPolicy
+                  - iam:GetPolicyVersion
+                  - iam:ListPolicyVersions
+                Resource: '*'
+      MaxSessionDuration: 3600
+
+Outputs:
+  RoleArn:
+    Description: ARN of the deployment role to assume
+    Value: !GetAtt DeploymentRole.Arn
+    Export:
+      Name: CostDetectiveDeploymentRoleArn
+
+  AssumeRoleCommand:
+    Description: Command to assume this role from the trusted account
+    Value: !Sub |
+      aws sts assume-role \
+        --role-arn ${DeploymentRole.Arn} \
+        --role-session-name cost-detective-deployment \
+        --external-id cost-detective-deploy-2026
