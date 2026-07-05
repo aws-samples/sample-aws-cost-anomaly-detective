@@ -1,31 +1,96 @@
 # AWS Cost Anomaly Detective 🔍💰
 
-**AI-Powered Cost Anomaly Detection with Amazon Bedrock**
+**Open-Source AI-Powered Cost Anomaly Detection with Amazon Bedrock**
 
-Automatically detect, analyze, and remediate AWS cost spikes using Claude Sonnet 4.6. Goes beyond simple thresholds to provide intelligent root cause analysis, contextual explanations, and actionable recommendations.
+Automatically detect, analyze, and remediate AWS cost spikes using Claude Sonnet 4.6. Goes beyond simple thresholds to provide intelligent root cause analysis, contextual explanations, and actionable remediation code.
 
 [![License: MIT-0](https://img.shields.io/badge/License-MIT--0-yellow.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![AWS](https://img.shields.io/badge/AWS-Bedrock%20%7C%20Lambda%20%7C%20Cost%20Explorer-orange.svg)](https://aws.amazon.com/)
 
-> **Note**: This is a sample project for demonstration purposes. Review and test thoroughly before using in production.
+> **Note**: This is a reference architecture and sample project for demonstration purposes. Review and test thoroughly before using in production.
 
 ---
 
-## 🌟 What Makes This Different?
+## 🤝 Relationship to AWS Cost Anomaly Detection
 
-**Traditional Cost Alerts:**
-- ❌ "Your Lambda costs increased 200%"
-- ❌ No context about WHY
-- ❌ Generic thresholds
-- ❌ Manual investigation required
+**AWS announced [AI-powered Cost Investigations](https://aws.amazon.com/blogs/aws-cloud-financial-management/introducing-ai-powered-cost-investigations-for-cost-anomalies/) (June 2026).** This sample project demonstrates the architecture patterns for building AI-powered cost intelligence with Amazon Bedrock.
 
-**Cost Anomaly Detective:**
-- ✅ "Lambda costs spiked because function X changed from 128MB to 3GB at 2pm by user@company.com"
-- ✅ AI correlates cost with config changes, deployments, and metrics
-- ✅ Generates CloudFormation remediation code
-- ✅ Executive summaries for non-technical stakeholders
-- ✅ Learns from historical patterns
+### How This Project Relates to AWS's Native Feature
+
+This is a **reference architecture and educational sample** that shows:
+
+✅ **Integration patterns** for Cost Explorer + CloudTrail + Bedrock  
+✅ **Extension points** for custom remediation workflows  
+✅ **Architecture best practices** for event-driven FinOps automation  
+✅ **How to build** similar AI-powered operational tools
+
+### Key Differences
+
+| Capability | AWS Native Feature | This Sample Project |
+|-----------|-------------------|---------------------|
+| **Purpose** | Production-ready managed service | Educational reference architecture |
+| **Analysis** | AI-powered root cause via Amazon Q | AI-powered root cause via Bedrock API |
+| **Remediation** | Analysis + manual remediation | Demonstrates auto-generated IaC code |
+| **Integration** | AWS Console + FinOps Agent | Shows Slack, email, ticketing patterns |
+| **Customization** | Managed service | Open source - learn & adapt |
+
+### When to Use This Sample
+
+**Use this project to:**
+- 📚 **Learn** how to integrate Bedrock with Cost Explorer APIs
+- 🏗️ **Build** custom FinOps automation tools
+- 🔧 **Extend** AWS Cost Anomaly Detection with custom workflows
+- 🎓 **Understand** AI-powered operational tool architecture
+- 🔌 **Prototype** integrations with Slack/Jira/ServiceNow
+- 🛠️ **Customize** for specific organizational requirements
+
+**Use AWS's native feature for:**
+- Production cost anomaly investigations
+- Managed service with AWS support
+- Teams already using Amazon Q Developer
+
+---
+
+## 🌟 What This Project Provides
+
+**Beyond Analysis - Actionable Remediation:**
+
+Traditional alerts and even AWS's native AI investigation stop at analysis. This project goes further:
+
+| Stage | Traditional Alerts | AWS Native AI | This Project |
+|-------|-------------------|---------------|--------------|
+| **Detection** | "Lambda costs up 200%" | ✅ "Lambda costs up 200%" | ✅ "Lambda costs up 200%" |
+| **Root Cause** | ❌ Manual investigation | ✅ "Function memory increased to 3GB by user@example.com" | ✅ "Function memory increased 128MB → 3GB by user@example.com at 2:15 PM" |
+| **Remediation** | ❌ Figure it out yourself | ❌ Hand off to engineering team | ✅ Auto-generated CloudFormation code to revert |
+| **Alerting** | ❌ Email only | ⚠️ AWS Console | ✅ Slack, Email, Jira, PagerDuty |
+| **Historical Tracking** | ❌ None | ⚠️ AWS-controlled | ✅ Your DynamoDB with custom queries |
+| **Customization** | ❌ Fixed | ❌ Closed source | ✅ Open source - adapt to your needs |
+
+**Example Alert:**
+```
+🚨 Lambda Cost Spike Detected
+
+Service: AWS Lambda (us-east-1)
+Spike: +200% ($150 → $450, $3,600/month projected)
+
+Root Cause:
+Function "data-processor" memory increased from 128MB to 3GB
+Changed by: john.doe@company.com at 2:15 PM UTC
+Change reason: "Quick fix for performance issue" (commit abc123)
+
+AI Analysis:
+P95 memory usage is only 850MB. The 3GB allocation is over-provisioned
+by 3.5x, causing unnecessary GB-second charges.
+
+Remediation:
+Apply this CloudFormation change to reduce memory to 1024MB:
+[CloudFormation snippet attached]
+
+Estimated savings: $280/month ($3,360/year)
+
+[Revert Change] [Snooze] [View Full Report]
+```
 
 ---
 
