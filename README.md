@@ -31,20 +31,23 @@ Automatically detect, analyze, and remediate AWS cost spikes using Claude Sonnet
 
 ## 🏗️ Architecture
 
+![Architecture Diagram](docs/architecture-mermaid.md)
+
+**High-level flow:**
 ```
 EventBridge (hourly) → Lambda → AI Analysis → Alerts
                          ↓
               ┌──────────┴──────────┐
               │                     │
          Cost Explorer        Context Enrichment
-         • Hourly costs      • CloudTrail (who/when)
+         • Cost data         • CloudTrail (who/when)
          • Service breakdown • Config (what changed)
          • Baselines         • CloudWatch (metrics)
                                     │
                               ┌─────┴─────┐
                               │  Bedrock  │
                               │  Claude   │
-                              │  3.5      │
+                              │ Sonnet 4.6│
                               └─────┬─────┘
                                     │
                     ┌───────────────┼───────────────┐
