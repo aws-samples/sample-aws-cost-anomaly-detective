@@ -1,6 +1,6 @@
 # Cost Anomaly Detective - Screenshot Checklist
 
-**Account:** 179099107560 (Management Account)  
+**Account:** XXXXXXXXXXXX (Management Account)  
 **Region:** us-east-1  
 **Date Deployed:** July 5, 2026
 
@@ -24,10 +24,10 @@
 ---
 
 ### ✅ 2. S3 Bucket
-**URL:** https://s3.console.aws.amazon.com/s3/buckets/cost-detective-reports-179099107560
+**URL:** https://s3.console.aws.amazon.com/s3/buckets/cost-detective-reports-XXXXXXXXXXXX
 
 **Show:**
-- [ ] Bucket name: `cost-detective-reports-179099107560`
+- [ ] Bucket name: `cost-detective-reports-XXXXXXXXXXXX`
 - [ ] Region: us-east-1
 - [ ] Block all public access: On
 - [ ] Default encryption: Enabled (AES-256)
@@ -42,7 +42,7 @@
 ---
 
 ### ✅ 3. SNS Topic
-**URL:** https://us-east-1.console.aws.amazon.com/sns/v3/home?region=us-east-1#/topic/arn:aws:sns:us-east-1:179099107560:cost-anomaly-alerts
+**URL:** https://us-east-1.console.aws.amazon.com/sns/v3/home?region=us-east-1#/topic/arn:aws:sns:us-east-1:XXXXXXXXXXXX:cost-anomaly-alerts
 
 **Show:**
 - [ ] Topic name: `cost-anomaly-alerts`
@@ -52,7 +52,7 @@
 
 **File name:** `03-sns-topic.png`
 
-**Action required:** Check email `chezsal+765@amazon.com` and confirm subscription before screenshot!
+**Action required:** Check email `user@example.com` and confirm subscription before screenshot!
 
 ---
 
@@ -203,8 +203,8 @@ Create a simple architecture diagram showing:
 
 Before adding screenshots to public repository:
 
-- [ ] Redact/blur AWS Account ID: ~~179099107560~~ → `XXXXXXXXXXXX`
-- [ ] Redact email addresses: ~~chezsal+765@amazon.com~~ → `user@example.com`
+- [ ] Redact/blur AWS Account ID: ~~XXXXXXXXXXXX~~ → `XXXXXXXXXXXX`
+- [ ] Redact email addresses: ~~user@example.com~~ → `user@example.com`
 - [ ] Keep resource names visible (they're generic)
 - [ ] Keep AWS service names visible
 - [ ] Keep region visible (us-east-1)
@@ -253,4 +253,4 @@ mkdir -p docs/screenshots
 
 **Status:** ⏳ Waiting for screenshots  
 **Deployed:** ✅ July 5, 2026  
-**Account:** 179099107560
+**Account:** XXXXXXXXXXXX
