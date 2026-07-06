@@ -98,6 +98,43 @@ Estimated savings: $280/month ($3,360/year)
 
 ![Architecture Diagram](docs/architecture-mermaid.md)
 
+**Deployed Infrastructure (Screenshots):**
+
+<details>
+<summary>View Deployed AWS Resources</summary>
+
+### DynamoDB Table
+![DynamoDB Table](docs/screenshots/01-dynamodb-table.png)
+
+### S3 Bucket
+![S3 Bucket](docs/screenshots/02-s3-bucket.png)
+
+### SNS Topic
+![SNS Topic](docs/screenshots/03-sns-topic.png)
+
+### Lambda Function Overview
+![Lambda Overview](docs/screenshots/04-lambda-overview.png)
+
+### Lambda Configuration
+![Lambda Config](docs/screenshots/05-lambda-config.png)
+
+### Lambda Test Execution
+![Lambda Test](docs/screenshots/06-lambda-test.png)
+
+### IAM Role
+![IAM Role](docs/screenshots/07-iam-role.png)
+
+### IAM Policy
+![IAM Policy](docs/screenshots/08-iam-policy.png)
+
+### EventBridge Rule
+![EventBridge Rule](docs/screenshots/09-eventbridge-rule.png)
+
+### CloudWatch Logs
+![CloudWatch Logs](docs/screenshots/10-cloudwatch-logs.png)
+
+</details>
+
 **High-level flow:**
 ```
 EventBridge (hourly) → Lambda → AI Analysis → Alerts
