@@ -56,3 +56,7 @@ package/
 # Temporary files
 tmp/
 temp/
+
+# Internal documents (not for public repo)
+INTERNAL_VALUE_PROPOSITION*
+REQUEST_PUBLIC_ACCESS.md
