@@ -11,43 +11,43 @@ This document lists the deployment screenshots that have been added to the repos
 All screenshots have been captured from a demo deployment and anonymized. Located in `docs/screenshots/`:
 
 ### 1. DynamoDB Table ✅
-![DynamoDB Table](screenshots/01-dynamodb-table.png)  
+![DynamoDB Table](docs/screenshots/01-dynamodb-table.png)  
 **Shows**: Cost anomaly history storage table with anonymized data
 
 ### 2. S3 Bucket ✅
-![S3 Bucket](screenshots/02-s3-bucket.png)  
+![S3 Bucket](docs/screenshots/02-s3-bucket.png)  
 **Shows**: S3 bucket for detailed anomaly reports (JSON)
 
 ### 3. SNS Topic ✅
-![SNS Topic](screenshots/03-sns-topic.png)  
+![SNS Topic](docs/screenshots/03-sns-topic.png)  
 **Shows**: SNS topic configuration for email alerts
 
 ### 4. Lambda Function Overview ✅
-![Lambda Overview](screenshots/04-lambda-overview.png)  
+![Lambda Overview](docs/screenshots/04-lambda-overview.png)  
 **Shows**: Lambda function with EventBridge trigger configured
 
 ### 5. Lambda Configuration ✅
-![Lambda Config](screenshots/05-lambda-config.png)  
+![Lambda Config](docs/screenshots/05-lambda-config.png)  
 **Shows**: Lambda environment variables and settings (sensitive values redacted)
 
 ### 6. Lambda Test Execution ✅
-![Lambda Test](screenshots/06-lambda-test.png)  
+![Lambda Test](docs/screenshots/06-lambda-test.png)  
 **Shows**: Successful test execution with sample anomaly detection
 
 ### 7. IAM Role ✅
-![IAM Role](screenshots/07-iam-role.png)  
+![IAM Role](docs/screenshots/07-iam-role.png)  
 **Shows**: Lambda execution role with trust policy
 
 ### 8. IAM Policy ✅
-![IAM Policy](screenshots/08-iam-policy.png)  
+![IAM Policy](docs/screenshots/08-iam-policy.png)  
 **Shows**: IAM policy permissions (account ID anonymized)
 
 ### 9. EventBridge Rule ✅
-![EventBridge Rule](screenshots/09-eventbridge-rule.png)  
+![EventBridge Rule](docs/screenshots/09-eventbridge-rule.png)  
 **Shows**: Scheduled EventBridge rule triggering Lambda hourly
 
 ### 10. CloudWatch Logs ✅
-![CloudWatch Logs](screenshots/10-cloudwatch-logs.png)  
+![CloudWatch Logs](docs/screenshots/10-cloudwatch-logs.png)  
 **Shows**: Execution logs with anomaly detection and Bedrock analysis
 
 ---
