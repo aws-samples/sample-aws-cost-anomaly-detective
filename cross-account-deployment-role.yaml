@@ -1,11 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Cross-account role for deploying Cost Anomaly Detective from account 816848895497'
+Description: 'Cross-account role for deploying Cost Anomaly Detective from a trusted account'
 
 Parameters:
   TrustedAccountId:
     Type: String
-    Default: '816848895497'
-    Description: AWS account ID that can assume this role
+    Default: '123456789012'
+    Description: AWS account ID that can assume this role (replace with your management account ID)
 
 Resources:
   DeploymentRole:
