@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'AWS Cost Anomaly Detective - Simple Deployment Test'
+
+Parameters:
+  AlertEmail:
+    Type: String
+    Description: Email address for cost anomaly alerts
+    AllowedPattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+Resources:
+  # DynamoDB Table
+  AnomalyHistoryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: cost-anomalies
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+
+  # S3 Bucket
+  ReportsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'cost-detective-reports-${AWS::AccountId}'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  # SNS Topic
+  AlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: Cost Anomaly Alerts
+      Subscriptions:
+        - Endpoint: !Ref AlertEmail
+          Protocol: email
+
+Outputs:
+  TableName:
+    Value: !Ref AnomalyHistoryTable
+  BucketName:
+    Value: !Ref ReportsBucket
+  TopicArn:
+    Value: !Ref AlertTopic

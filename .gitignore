@@ -51,6 +51,7 @@ htmlcov/
 # Deployment packages
 function.zip
 *.zip
+package/
 
 # Temporary files
 tmp/
