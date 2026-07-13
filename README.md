@@ -96,7 +96,7 @@ Estimated savings: $280/month ($3,360/year)
 
 ---
 
-## 🏗️ Architecture
+## 📐 Architecture
 
 ![Architecture Diagram](docs/architecture-mermaid.md)
 
