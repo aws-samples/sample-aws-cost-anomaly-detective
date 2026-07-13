@@ -1,226 +1,158 @@
 # Screenshot Guide
 
-**Instructions for adding screenshots after AWS approval and deployment**
+**✅ Screenshots Added and Anonymized**
 
-This document lists where screenshots should be added to enhance the documentation.
-
----
-
-## Priority 1: README Screenshots
-
-### 1. Slack Alert Example
-**Location**: `README.md` after "Example Output" section  
-**File**: `images/slack-alert-example.png`
-
-**What to capture**:
-- Full Slack message showing cost anomaly
-- Include severity emoji, cost impact, root cause
-- Show action buttons (View Report, Cost Explorer)
-- Capture in light mode for better visibility
-
-**Recommended size**: 800x600px
+This document lists the deployment screenshots that have been added to the repository. All screenshots have been anonymized with account IDs and sensitive information redacted.
 
 ---
 
-### 2. Architecture Diagram
-**Location**: `README.md` in Architecture section  
-**File**: `images/architecture-diagram.png`
+## ✅ Deployment Screenshots Included
 
-**What to create**:
-- Use draw.io or similar tool
-- Show: EventBridge → Lambda → Bedrock → Alerts flow
-- Include: CloudWatch, Cost Explorer, CloudTrail inputs
-- Output: DynamoDB, S3, SNS/Slack
-- AWS icon library recommended
+All screenshots have been captured from a demo deployment and anonymized. Located in `docs/screenshots/`:
 
-**Recommended size**: 1200x800px
+### 1. DynamoDB Table ✅
+**File**: `docs/screenshots/01-dynamodb-table.png`  
+**Shows**: Cost anomaly history storage table with anonymized data
 
----
+### 2. S3 Bucket ✅
+**File**: `docs/screenshots/02-s3-bucket.png`  
+**Shows**: S3 bucket for detailed anomaly reports (JSON)
 
-### 3. AWS Console - Cost Explorer
-**Location**: `README.md` or `docs/` folder  
-**File**: `images/cost-explorer-spike.png`
+### 3. SNS Topic ✅
+**File**: `docs/screenshots/03-sns-topic.png`  
+**Shows**: SNS topic configuration for email alerts
 
-**What to capture**:
-- Cost Explorer graph showing cost spike
-- Highlight the anomaly period
-- Show service breakdown
-- Anonymize account details
+### 4. Lambda Function Overview ✅
+**File**: `docs/screenshots/04-lambda-overview.png`  
+**Shows**: Lambda function with EventBridge trigger configured
 
-**Recommended size**: 1000x600px
+### 5. Lambda Configuration ✅
+**File**: `docs/screenshots/05-lambda-config.png`  
+**Shows**: Lambda environment variables and settings (sensitive values redacted)
 
----
+### 6. Lambda Test Execution ✅
+**File**: `docs/screenshots/06-lambda-test.png`  
+**Shows**: Successful test execution with sample anomaly detection
 
-## Priority 2: Workshop Screenshots
+### 7. IAM Role ✅
+**File**: `docs/screenshots/07-iam-role.png`  
+**Shows**: Lambda execution role with trust policy
 
-### 4. CloudFormation Deployment
-**Location**: `docs/WORKSHOP.md` Module 2  
-**File**: `images/cloudformation-deploy.png`
+### 8. IAM Policy ✅
+**File**: `docs/screenshots/08-iam-policy.png`  
+**Shows**: IAM policy permissions (account ID anonymized)
 
-**What to capture**:
-- CloudFormation console showing stack creation
-- Highlight parameters section
-- Show "CREATE_COMPLETE" status
+### 9. EventBridge Rule ✅
+**File**: `docs/screenshots/09-eventbridge-rule.png`  
+**Shows**: Scheduled EventBridge rule triggering Lambda hourly
 
----
-
-### 5. Lambda Function View
-**Location**: `docs/WORKSHOP.md` Module 3  
-**File**: `images/lambda-function.png`
-
-**What to capture**:
-- Lambda console showing function details
-- Environment variables (redact sensitive values)
-- Configured triggers (EventBridge)
+### 10. CloudWatch Logs ✅
+**File**: `docs/screenshots/10-cloudwatch-logs.png`  
+**Shows**: Execution logs with anomaly detection and Bedrock analysis
 
 ---
 
-### 6. CloudWatch Logs
-**Location**: `docs/WORKSHOP.md` Module 3  
-**File**: `images/cloudwatch-logs.png`
+## Architecture Diagram ✅
 
-**What to capture**:
-- CloudWatch Logs showing successful execution
-- Highlight key log messages:
-  - "Detected anomaly"
-  - "Bedrock analysis complete"
-  - "Alert sent"
+**File**: `docs/architecture-diagram.drawio`  
+**Format**: Draw.io XML (editable)  
+**Shows**: Complete architecture flow from EventBridge → Lambda → Bedrock → Outputs
 
 ---
 
-## Priority 3: Blog Post Screenshots
+## Anonymization Applied ✅
 
-### 7. S3 Report Example
-**Location**: `docs/BLOG.md`  
-**File**: `images/s3-report.png`
+All screenshots have been reviewed and anonymized according to AWS guidelines:
 
-**What to capture**:
-- S3 bucket with report files
-- One report opened in browser/viewer
-- Show JSON structure
+### Completed Anonymization Checklist
 
----
+- ✅ No real AWS account IDs (replaced with redacted blocks)
+- ✅ No real email addresses (redacted)
+- ✅ No real employee names
+- ✅ No actual cost amounts (sample data used)
+- ✅ No internal URLs or hostnames
+- ✅ No API keys, tokens, or credentials visible
+- ✅ No customer-specific resource names
 
-### 8. DynamoDB Table
-**Location**: `docs/BLOG.md`  
-**File**: `images/dynamodb-anomalies.png`
-
-**What to capture**:
-- DynamoDB console showing anomaly records
-- Show PK/SK structure
-- Highlight stored analysis
+**Anonymization Commit**: `9d280d5` - "Add anonymized deployment screenshots showing AWS infrastructure"  
+**Additional Redaction**: `3971bf2` - "Fix missed account number in IAM policy ARN"
 
 ---
 
-### 9. Before/After Cost Comparison
-**Location**: `docs/BLOG.md` or README  
-**File**: `images/cost-comparison.png`
+## How Screenshots Are Used
 
-**What to capture**:
-- Side-by-side graph showing:
-  - Before: Unnoticed cost spike growing
-  - After: Alert caught spike immediately
-- Annotate savings amount
-
----
-
-## Screenshot Guidelines
-
-### General Requirements
-
-✅ **DO**:
-- Use light mode for better visibility
-- Anonymize sensitive data (account IDs, emails, real costs)
-- Use sample/demo data where possible
-- Crop to relevant area only
-- Use high resolution (at least 1024px width)
-- Add descriptive alt text in markdown
-- Compress images (use tinypng.com or similar)
-
-❌ **DON'T**:
-- Include real customer data
-- Show actual account numbers
-- Include internal-only information
-- Use dark mode (harder to see in docs)
-- Include your personal email/username
-- Show real cost amounts (use rounded/sample values)
-
----
-
-### Example Markdown Format
+### In README.md
+The README references screenshots in a collapsible section showing the deployed AWS infrastructure:
 
 ```markdown
-## Example Slack Alert
+<details>
+<summary>View Deployed AWS Resources</summary>
 
-![Cost Anomaly Alert in Slack](images/slack-alert-example.png)
+### DynamoDB Table
+![DynamoDB Table](docs/screenshots/01-dynamodb-table.png)
 
-*Example Slack alert showing a cost spike detection with AI-powered root cause analysis*
+### S3 Bucket
+![S3 Bucket](docs/screenshots/02-s3-bucket.png)
+...
+</details>
 ```
 
----
-
-### Anonymization Checklist
-
-Before adding any screenshot, ensure:
-
-- [ ] No real AWS account IDs (use 123456789012 or XXX-MASKED-XXX)
-- [ ] No real email addresses (use example@example.com)
-- [ ] No real employee names (use "John Doe" or similar)
-- [ ] No actual cost amounts unless de minimis (use round numbers like $100, $500)
-- [ ] No internal URLs or hostnames
-- [ ] No API keys, tokens, or credentials visible
-- [ ] No customer-specific resource names
+This provides visual proof of the working deployment without cluttering the main README.
 
 ---
 
-## Tools for Creating Screenshots
+## Screenshot Standards
 
-### Recommended:
-- **macOS**: Cmd+Shift+4 (select area)
-- **Windows**: Snipping Tool or Win+Shift+S
-- **Browser**: Full page screenshots via DevTools
+All screenshots follow these standards:
 
-### Editing:
-- **Annotations**: Skitch, Monosnap, Snagit
-- **Anonymization**: GIMP, Photoshop (blur sensitive data)
-- **Compression**: TinyPNG, ImageOptim
+✅ **Quality**:
+- High resolution (1024px+ width)
+- Light mode for visibility
+- Cropped to relevant areas
+- Compressed for fast loading
 
-### Diagrams:
-- **draw.io** (diagrams.net)
-- **Lucidchart**
-- **AWS Architecture Icons**: https://aws.amazon.com/architecture/icons/
+✅ **Security**:
+- Account IDs redacted with black boxes
+- Email addresses removed
+- Sensitive ARNs partially masked
+- Sample data only
 
----
-
-## Post-Deployment Checklist
-
-After adding screenshots:
-
-1. [ ] Create `images/` directory
-2. [ ] Add all screenshots per list above
-3. [ ] Verify images load in GitHub preview
-4. [ ] Check file sizes (<500KB each)
-5. [ ] Update alt text for accessibility
-6. [ ] Test README renders correctly on GitHub
-7. [ ] Commit: `git add images/ && git commit -m "Add screenshots"`
-8. [ ] Push to GitHub
+✅ **Accessibility**:
+- Descriptive alt text
+- Sequential numbering for easy reference
+- Organized in `docs/screenshots/` directory
 
 ---
 
-## Optional: Video Walkthrough
+## Future Screenshot Updates
 
-Consider adding a 2-3 minute demo video:
+If additional screenshots are needed:
 
-**Content**:
-- Quick architecture overview
-- Live deployment demo
-- Slack alert demonstration
-- CloudWatch logs inspection
+1. Deploy in demo/sandbox account only
+2. Use sample data (no production)
+3. Apply anonymization before committing
+4. Follow naming convention: `##-description.png`
+5. Update this guide with new screenshots
+6. Commit with clear message about anonymization
 
-**Where to host**:
-- YouTube (AWS channel or personal)
-- Link from README: `[![Demo Video](thumbnail.png)](video-url)`
+**Tools for Anonymization**:
+- **macOS Preview**: Shapes/annotations to cover text
+- **GIMP/Photoshop**: Blur or black boxes
+- **Monosnap**: Built-in annotation tools
 
 ---
 
-**Note**: Screenshots should only be added AFTER getting AWS approval and deploying in a demo/sandbox account. Do not use production accounts for screenshots.
+## Status Summary
+
+| Component | Status | Location |
+|-----------|--------|----------|
+| Deployment Screenshots | ✅ Complete | `docs/screenshots/` (10 files) |
+| Architecture Diagram | ✅ Complete | `docs/architecture-diagram.drawio` |
+| Anonymization Review | ✅ Complete | All sensitive data redacted |
+| README Integration | ✅ Complete | Collapsible section added |
+| aws-samples Ready | ✅ Complete | Public release approved |
+
+---
+
+**Last Updated**: July 12, 2026  
+**Status**: All screenshots complete and anonymized for aws-samples publication
