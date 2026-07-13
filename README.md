@@ -54,18 +54,20 @@ This is a **reference architecture and educational sample** that shows:
 
 ## 🌟 What This Project Provides
 
-**Beyond Analysis - Actionable Remediation:**
+**Educational Sample: Learn How to Build AI-Powered Operational Tools**
 
-Traditional alerts and even AWS's native AI investigation stop at analysis. This project goes further:
+This reference architecture demonstrates patterns for extending AWS cost management with custom automation:
 
-| Stage | Traditional Alerts | AWS Native AI | This Project |
-|-------|-------------------|---------------|--------------|
-| **Detection** | "Lambda costs up 200%" | ✅ "Lambda costs up 200%" | ✅ "Lambda costs up 200%" |
-| **Root Cause** | ❌ Manual investigation | ✅ "Function memory increased to 3GB by user@example.com" | ✅ "Function memory increased 128MB → 3GB by user@example.com at 2:15 PM" |
-| **Remediation** | ❌ Figure it out yourself | ❌ Hand off to engineering team | ✅ Auto-generated CloudFormation code to revert |
-| **Alerting** | ❌ Email only | ⚠️ AWS Console | ✅ Slack, Email, Jira, PagerDuty |
-| **Historical Tracking** | ❌ None | ⚠️ AWS-controlled | ✅ Your DynamoDB with custom queries |
-| **Customization** | ❌ Fixed | ❌ Closed source | ✅ Open source - adapt to your needs |
+| Capability | What You'll Learn | What You Can Build |
+|-----------|-------------------|---------------------|
+| **Bedrock Integration** | How to use Claude API for operational analysis | AI-powered root cause detection with rich context |
+| **Event-Driven Automation** | EventBridge + Lambda + AI workflow patterns | Automated investigation and response systems |
+| **Custom Workflows** | Integration with ITSM tools (Slack, Jira, etc.) | Organization-specific alerting and approval flows |
+| **IaC Generation** | AI-generated CloudFormation for remediation | Auto-generated code to revert configuration changes |
+| **Data Ownership** | Store analysis in your DynamoDB for custom queries | Build custom dashboards and trend analysis |
+| **Extensibility** | Open source patterns you can adapt | Apply same patterns to security, compliance, performance |
+
+**Use Case**: Start with [AWS Cost Anomaly Detection](https://aws.amazon.com/aws-cost-management/aws-cost-anomaly-detection/) (recommended), then use this sample to learn how to build custom extensions.
 
 **Example Alert:**
 ```
