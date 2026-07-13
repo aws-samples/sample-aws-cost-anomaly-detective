@@ -7,15 +7,16 @@
 
 ## Account IDs ✅
 
-- ✅ Real account ID `816848895497` replaced with `123456789012`
-- ✅ All remaining 12-digit numbers are placeholders:
+- ✅ All real account IDs replaced with standard AWS placeholders
+- ✅ All 12-digit numbers in code are example placeholders:
   - `123456789012` - Standard AWS example
   - `111111111111` - Production example
   - `222222222222` - Development example  
   - `210987654321` - Workshop example
 - ✅ Screenshots have account IDs redacted with black boxes
+- ✅ No real AWS account numbers present in repository
 
-**Commits**:
+**Anonymization Commits**:
 - `9d280d5` - Initial screenshot anonymization
 - `3971bf2` - Fix missed account number in IAM policy ARN
 - `a57f696` - Anonymize cross-account deployment role
