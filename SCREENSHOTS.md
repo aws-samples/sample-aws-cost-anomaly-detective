@@ -11,52 +11,52 @@ This document lists the deployment screenshots that have been added to the repos
 All screenshots have been captured from a demo deployment and anonymized. Located in `docs/screenshots/`:
 
 ### 1. DynamoDB Table ✅
-**File**: `docs/screenshots/01-dynamodb-table.png`  
+![DynamoDB Table](screenshots/01-dynamodb-table.png)  
 **Shows**: Cost anomaly history storage table with anonymized data
 
 ### 2. S3 Bucket ✅
-**File**: `docs/screenshots/02-s3-bucket.png`  
+![S3 Bucket](screenshots/02-s3-bucket.png)  
 **Shows**: S3 bucket for detailed anomaly reports (JSON)
 
 ### 3. SNS Topic ✅
-**File**: `docs/screenshots/03-sns-topic.png`  
+![SNS Topic](screenshots/03-sns-topic.png)  
 **Shows**: SNS topic configuration for email alerts
 
 ### 4. Lambda Function Overview ✅
-**File**: `docs/screenshots/04-lambda-overview.png`  
+![Lambda Overview](screenshots/04-lambda-overview.png)  
 **Shows**: Lambda function with EventBridge trigger configured
 
 ### 5. Lambda Configuration ✅
-**File**: `docs/screenshots/05-lambda-config.png`  
+![Lambda Config](screenshots/05-lambda-config.png)  
 **Shows**: Lambda environment variables and settings (sensitive values redacted)
 
 ### 6. Lambda Test Execution ✅
-**File**: `docs/screenshots/06-lambda-test.png`  
+![Lambda Test](screenshots/06-lambda-test.png)  
 **Shows**: Successful test execution with sample anomaly detection
 
 ### 7. IAM Role ✅
-**File**: `docs/screenshots/07-iam-role.png`  
+![IAM Role](screenshots/07-iam-role.png)  
 **Shows**: Lambda execution role with trust policy
 
 ### 8. IAM Policy ✅
-**File**: `docs/screenshots/08-iam-policy.png`  
+![IAM Policy](screenshots/08-iam-policy.png)  
 **Shows**: IAM policy permissions (account ID anonymized)
 
 ### 9. EventBridge Rule ✅
-**File**: `docs/screenshots/09-eventbridge-rule.png`  
+![EventBridge Rule](screenshots/09-eventbridge-rule.png)  
 **Shows**: Scheduled EventBridge rule triggering Lambda hourly
 
 ### 10. CloudWatch Logs ✅
-**File**: `docs/screenshots/10-cloudwatch-logs.png`  
+![CloudWatch Logs](screenshots/10-cloudwatch-logs.png)  
 **Shows**: Execution logs with anomaly detection and Bedrock analysis
 
 ---
 
 ## Architecture Diagram ✅
 
-**File**: `docs/architecture-diagram.drawio`  
-**Format**: Draw.io XML (editable)  
-**Shows**: Complete architecture flow from EventBridge → Lambda → Bedrock → Outputs
+📊 **[architecture-diagram.drawio](architecture-diagram.drawio)** (Draw.io XML - editable)  
+**Shows**: Complete architecture flow from EventBridge → Lambda → Bedrock → Outputs  
+**Edit at**: https://app.diagrams.net
 
 ---
 
