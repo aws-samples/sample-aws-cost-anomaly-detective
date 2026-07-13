@@ -1,82 +1,50 @@
 # Setup Instructions - AWS Cost Anomaly Detective
 
-## Step 1: Configure Git (First Time)
+**Status**: ✅ **LIVE ON AWS-SAMPLES**  
+**Repository**: https://github.com/aws-samples/sample-aws-cost-anomaly-detective
+
+---
+
+## For Contributors/Developers
+
+### Step 1: Clone the Repository
 
 ```bash
-cd ~/aws-cost-anomaly-detective
-
-# Set your AWS email
-git config user.email "your-alias@amazon.com"
-git config user.name "Your Name"
+# Clone from aws-samples
+git clone https://github.com/aws-samples/sample-aws-cost-anomaly-detective.git
+cd sample-aws-cost-anomaly-detective
 ```
 
-## Step 2: Create Initial Commit
+### Step 2: Install Dependencies
 
 ```bash
-git add -A
-git commit -m "Initial commit: AWS Cost Anomaly Detective
-
-AI-powered cost anomaly detection using Amazon Bedrock (Claude Sonnet 4.6).
-
-Features:
-- Real-time cost spike detection
-- AI root cause analysis  
-- Multi-service correlation
-- Automated alerting
-
-Status: Ready for aws-samples submission"
+# Install Python dependencies
+pip install -r requirements.txt
 ```
 
-## Step 3: AWS Internal Approval Process
-
-1. **Share with your manager**:
-   - Send `AWS_APPROVAL_CHECKLIST.md`
-   - Explain business value (customer enablement, thought leadership)
-   - Get approval to proceed
-
-2. **Submit repo creation request**:
-   - Go to AWS internal GitHub portal
-   - Request new repo in `aws-samples` org
-   - Repo name: `aws-cost-anomaly-detective`
-   - Attach approval checklist
-
-3. **Wait for aws-samples repo creation** (3-5 business days)
-
-## Step 4: Push to aws-samples (After repo created)
+### Step 3: Configure AWS Credentials
 
 ```bash
-# Add remote (replace with actual URL you receive)
-git remote add origin https://github.com/aws-samples/aws-cost-anomaly-detective.git
+# Set up AWS credentials (if not already configured)
+aws configure
 
-# Push to main
-git push -u origin main
+# Verify access to required services
+aws bedrock list-foundation-models --region us-east-1
+aws ce get-cost-and-usage --time-period Start=2026-01-01,End=2026-01-02 --granularity DAILY --metrics BlendedCost
 ```
 
-## Step 5: Finalize (Optional but recommended)
+### Step 4: Deploy to Your AWS Account
 
-Complete remaining files:
+See deployment options in the main [README.md](README.md):
+- **Quick Deploy**: 1-click CloudFormation
+- **Manual Deploy**: Step-by-step Lambda setup
+- **Multi-Account**: Organizations deployment
 
-```bash
-# Create missing modules
-touch src/context_enricher.py
-touch src/alerting.py
-touch src/utils.py
+---
 
-# Create CloudFormation
-mkdir -p cloudformation
-touch cloudformation/deployment-template.yaml
+## For Contributors
 
-# Create tests
-mkdir -p tests
-touch tests/test_cost_analyzer.py
-
-# Add and commit
-git add .
-git commit -m "Add remaining implementation files"
-git push
-```
-
-## Step 6: Promote & Use
+### Making Changes
 
 - ✅ Add GitHub repo URL to your internal wiki
 - ✅ Share on internal #opensource Slack channel
@@ -111,4 +79,14 @@ python src/lambda_function.py
 
 ---
 
-**Next Action**: Get manager approval → Submit to AWS Open Source team
+## Quick Links
+
+- 🌐 **Live Repository**: https://github.com/aws-samples/sample-aws-cost-anomaly-detective
+- 📖 **Main README**: [README.md](README.md)
+- 🏗️ **Architecture**: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- 🎓 **Workshop**: [docs/WORKSHOP.md](docs/WORKSHOP.md)
+- 🔐 **Security Review**: [SECURITY_ANONYMIZATION_CHECKLIST.md](SECURITY_ANONYMIZATION_CHECKLIST.md)
+
+---
+
+**Status**: ✅ **APPROVED AND PUBLIC** - Ready for promotion and customer use!
