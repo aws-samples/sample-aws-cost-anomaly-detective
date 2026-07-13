@@ -82,7 +82,7 @@ Use the standard deployment in the management account:
 
 ```bash
 # Clone repository
-git clone https://github.com/chezsal12/aws-cost-anomaly-detective.git
+git clone https://github.com/aws-samples/sample-aws-cost-anomaly-detective.git
 cd aws-cost-anomaly-detective
 
 # Deploy CloudFormation (in management account)
@@ -405,7 +405,7 @@ aws cloudformation delete-stack --stack-name cost-detective
 ## 📞 Support
 
 For multi-account deployment questions:
-- **GitHub Issues**: https://github.com/chezsal12/aws-cost-anomaly-detective/issues
+- **GitHub Issues**: https://github.com/aws-samples/sample-aws-cost-anomaly-detective/issues
 - **Tag**: `multi-account` or `organizations`
 
 ---

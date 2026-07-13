@@ -521,7 +521,7 @@ HighCostSpikeAlarm:
 - [ ] Integration with ServiceNow/Jira (auto-create tickets)
 
 ### Roadmap
-See [GitHub Issues](https://github.com/chezsal12/aws-cost-anomaly-detective/issues) for feature requests and roadmap.
+See [GitHub Issues](https://github.com/aws-samples/sample-aws-cost-anomaly-detective/issues) for feature requests and roadmap.
 
 ---
 

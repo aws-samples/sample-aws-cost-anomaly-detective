@@ -10,7 +10,7 @@
 
 Traditional AWS cost alerts tell you *what* happened. We built a system using Amazon Bedrock (Claude Sonnet 4.6) that tells you *why* it happened, *who* caused it, and *how* to fix it. Open source, production-ready, ~$30/month to run.
 
-**[GitHub Repository →](https://github.com/chezsal12/aws-cost-anomaly-detective)**
+**[GitHub Repository →](https://github.com/aws-samples/sample-aws-cost-anomaly-detective)**
 
 ---
 
@@ -310,7 +310,7 @@ Cost Explorer data is 8-24 hours delayed. Hourly detection is aspirational; real
 
 ## Open Source & What's Next
 
-**The code is live**: [github.com/chezsal12/aws-cost-anomaly-detective](https://github.com/chezsal12/aws-cost-anomaly-detective)
+**The code is live**: [github.com/aws-samples/sample-aws-cost-anomaly-detective](https://github.com/aws-samples/sample-aws-cost-anomaly-detective)
 
 ### Roadmap
 
@@ -324,7 +324,7 @@ Cost Explorer data is 8-24 hours delayed. Hourly detection is aspirational; real
 
 1-click deploy via CloudFormation:
 ```bash
-git clone https://github.com/chezsal12/aws-cost-anomaly-detective.git
+git clone https://github.com/aws-samples/sample-aws-cost-anomaly-detective.git
 cd aws-cost-anomaly-detective
 
 aws cloudformation deploy \
@@ -356,7 +356,7 @@ That's the power of AI in operations.
 
 ## Feedback & Questions
 
-- **GitHub Issues**: [Report bugs, request features, or ask questions](https://github.com/chezsal12/aws-cost-anomaly-detective/issues)
+- **GitHub Issues**: [Report bugs, request features, or ask questions](https://github.com/aws-samples/sample-aws-cost-anomaly-detective/issues)
 
 ---
 

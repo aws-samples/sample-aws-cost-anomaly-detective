@@ -175,7 +175,7 @@ EventBridge (hourly) → Lambda → AI Analysis → Alerts
 
 ```bash
 # Clone repository
-git clone https://github.com/chezsal12/aws-cost-anomaly-detective.git
+git clone https://github.com/aws-samples/sample-aws-cost-anomaly-detective.git
 cd aws-cost-anomaly-detective
 
 # Deploy stack
@@ -422,7 +422,7 @@ Built by AWS Solutions Architects to showcase:
 
 ## 📞 Support
 
-- **Issues & Questions**: [GitHub Issues](https://github.com/chezsal12/aws-cost-anomaly-detective/issues)
+- **Issues & Questions**: [GitHub Issues](https://github.com/aws-samples/sample-aws-cost-anomaly-detective/issues)
 - **AWS Support**: For production issues, contact AWS Support
 - **Author**: [Chezsal Kamaray on LinkedIn](https://www.linkedin.com/in/chezsal-kamaray-beng-hons-msc-pmp-666bb715/)
 

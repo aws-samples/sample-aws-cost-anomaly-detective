@@ -56,7 +56,7 @@ That's it! Models are ready to use.
 ### 1.2 Clone Repository
 
 ```bash
-git clone https://github.com/chezsal12/aws-cost-anomaly-detective.git
+git clone https://github.com/aws-samples/sample-aws-cost-anomaly-detective.git
 cd aws-cost-anomaly-detective
 ```
 
@@ -327,7 +327,7 @@ aws s3 rb s3://$BUCKET --force
 
 ## 🤝 Questions & Feedback
 
-- **GitHub Issues**: https://github.com/chezsal12/aws-cost-anomaly-detective/issues
+- **GitHub Issues**: https://github.com/aws-samples/sample-aws-cost-anomaly-detective/issues
 - **AWS Support**: Your TAM or AWS Support contact
 
 ---
