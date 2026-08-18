@@ -190,26 +190,80 @@ aws cloudformation deploy \
     SlackWebhookUrl=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
 ```
 
-### Manual Deploy
+**That's it!** Your Cost Detective is now running hourly. Check your email (or Slack) for alerts.
+
+---
+
+## 🛠️ Deployment Methods
+
+Choose the deployment method that works for your AWS environment:
+
+### Method 1: CloudFormation (Recommended)
+
+**Best for:** Standard AWS accounts  
+**Time:** 5-10 minutes  
+**Complexity:** Low
+
+The quick start above uses CloudFormation for automated deployment. Use this if your AWS account allows CloudFormation operations.
+
+### Method 2: Manual CLI Deployment
+
+**Best for:** Restricted or highly-regulated AWS environments  
+**Time:** 10-15 minutes  
+**Complexity:** Medium
+
+For AWS accounts with CloudFormation restrictions (organizational policies, validation hooks, Service Control Policies):
 
 ```bash
-# Install dependencies
-cd src
-pip install -r requirements.txt -t .
+# Option A: Automated script (recommended)
+./scripts/manual-deploy.sh your-email@example.com us-east-2
 
-# Create deployment package
-zip -r function.zip .
-
-# Create Lambda function
-aws lambda create-function \
-  --function-name cost-detective \
-  --runtime python3.12 \
-  --role arn:aws:iam::YOUR_ACCOUNT:role/CostDetectiveRole \
-  --handler lambda_function.lambda_handler \
-  --zip-file fileb://function.zip \
-  --timeout 300 \
-  --memory-size 1024
+# Option B: Step-by-step guide
+# See MANUAL_DEPLOYMENT_GUIDE.md
 ```
+
+**When to use Manual Deployment:**
+- ❌ CloudFormation blocked by `AWS::EarlyValidation::PropertyValidation` errors
+- ❌ Organizational policies restrict CloudFormation operations
+- ❌ Change management requires granular resource approval
+- ✅ Need step-by-step control over resource creation
+- ✅ Want to learn exactly what resources are created
+
+See **[MANUAL_DEPLOYMENT_GUIDE.md](MANUAL_DEPLOYMENT_GUIDE.md)** for complete instructions.
+
+### Method 3: FinOps Account Pattern (Enterprise)
+
+**Best for:** Enterprise customers with dedicated FinOps/Tools accounts  
+**Time:** 20-30 minutes  
+**Complexity:** Medium-High
+
+For organizations that:
+- Cannot deploy to management account due to security policies
+- Require minimal management account footprint (compliance/audit)
+- Have dedicated FinOps or Tools accounts for cost management
+
+Deploy in FinOps account with cross-account IAM role to query Cost Explorer in management account.
+
+**Benefits:**
+- ✅ **More secure** - Management account footprint: 1 IAM role only (vs 10+ resources)
+- ✅ **Meets compliance** - Clear separation of duties
+- ✅ **Same functionality** - Org-wide cost visibility maintained
+- ✅ **Same cost** - No additional charges for cross-account access
+
+See **[docs/MULTI_ACCOUNT_DEPLOYMENT.md](docs/MULTI_ACCOUNT_DEPLOYMENT.md)** for cross-account deployment patterns.
+
+### Comparison
+
+| Feature | CloudFormation | Manual CLI | FinOps Pattern |
+|---------|---------------|------------|----------------|
+| **Time** | 5-10 min | 10-15 min | 20-30 min |
+| **Automation** | ✅ Full | ⚠️ Partial | ⚠️ Partial |
+| **Works with CF restrictions** | ❌ No | ✅ Yes | ✅ Yes |
+| **Enterprise compliance** | ⚠️ Depends | ✅ Yes | ✅ Yes |
+| **Multi-account visibility** | ⚠️ If in mgmt | ⚠️ If in mgmt | ✅ Always |
+| **Rollback** | ✅ Built-in | ⚠️ Manual | ⚠️ Manual |
+
+See **[DEPLOYMENT_COMPARISON.md](DEPLOYMENT_COMPARISON.md)** for detailed decision guidance.
 
 ---
 
