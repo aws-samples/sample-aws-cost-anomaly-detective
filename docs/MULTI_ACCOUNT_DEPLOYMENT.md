@@ -6,7 +6,41 @@ This guide explains how to deploy AWS Cost Anomaly Detective in an AWS Organizat
 
 ---
 
-## 🏢 Architecture Overview
+## 🎯 Deployment Options for Organizations
+
+### Option 1: FinOps Account Deployment (Recommended for Enterprise)
+
+**Deploy in a dedicated FinOps/Tools account** with cross-account IAM role to query management account.
+
+**Best for:**
+- ✅ Enterprise security policies requiring minimal management account footprint
+- ✅ Compliance requirements for account isolation
+- ✅ Organizations with dedicated FinOps teams and tooling accounts
+
+**Benefits:**
+- Management account footprint: 1 IAM role only (vs 10+ resources)
+- More secure than deploying directly in management account
+- Same org-wide cost visibility
+- Same $30-35/month operating cost
+
+**→ See [FINOPS_DEPLOYMENT.md](FINOPS_DEPLOYMENT.md) for complete FinOps account setup**
+
+---
+
+### Option 2: Management Account Deployment (Traditional)
+
+**Deploy directly in management account** for simpler setup.
+
+**Best for:**
+- Standard AWS Organizations without strict management account restrictions
+- Smaller organizations (< 50 accounts)
+- Teams comfortable with resources in management account
+
+**This guide covers this option.** Continue reading below for management account deployment.
+
+---
+
+## 🏢 Architecture Overview (Management Account Deployment)
 
 ```
 AWS Organization
