@@ -1,6 +1,20 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'AWS Cost Anomaly Detective - AI-powered cost monitoring with Amazon Bedrock'
 
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Notification Configuration
+        Parameters:
+          - AlertEmail
+          - SlackWebhookUrl
+      - Label:
+          default: Detection Settings
+        Parameters:
+          - ThresholdPercentage
+          - ScheduleExpression
+
 Parameters:
   AlertEmail:
     Type: String
@@ -9,8 +23,9 @@ Parameters:
 
   SlackWebhookUrl:
     Type: String
-    Description: (Optional) Slack webhook URL for alerts
+    Description: (Optional) Slack webhook URL for alerts - will be stored securely in Secrets Manager
     Default: ''
+    NoEcho: true
 
   ThresholdPercentage:
     Type: Number
@@ -29,15 +44,43 @@ Parameters:
       - 'rate(6 hours)'
       - 'rate(1 day)'
 
+  MonthlyBudgetLimit:
+    Type: Number
+    Description: Monthly budget limit for cost anomaly detective (USD)
+    Default: 20
+    MinValue: 5
+    MaxValue: 1000
+
 Conditions:
   HasSlackWebhook: !Not [!Equals [!Ref SlackWebhookUrl, '']]
 
 Resources:
+  # Secrets Manager Secret for Slack Webhook
+  SlackWebhookSecret:
+    Type: AWS::SecretsManager::Secret
+    Condition: HasSlackWebhook
+    Properties:
+      Name: cost-detective/slack-webhook
+      Description: Slack webhook URL for Cost Anomaly Detective alerts
+      SecretString: !Sub |
+        {"webhook_url": "${SlackWebhookUrl}"}
+
   # DynamoDB Table for anomaly history
   AnomalyHistoryTable:
     Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       TableName: cost-anomalies
+      Tags:
+        - Key: Application
+          Value: cost-anomaly-detective
+        - Key: Environment
+          Value: production
+        - Key: ManagedBy
+          Value: CloudFormation
+        - Key: DataClassification
+          Value: internal
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: PK
@@ -62,14 +105,19 @@ Resources:
               KeyType: RANGE
           Projection:
             ProjectionType: ALL
+      SSESpecification:
+        SSEEnabled: true
+        SSEType: KMS
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
 
-  # S3 Bucket for detailed reports
-  ReportsBucket:
+  # S3 Bucket for access logs
+  AccessLogsBucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
-      BucketName: !Sub 'cost-detective-reports-${AWS::AccountId}'
+      BucketName: !Sub 'cost-detective-logs-${AWS::AccountId}'
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
@@ -81,15 +129,77 @@ Resources:
         RestrictPublicBuckets: true
       LifecycleConfiguration:
         Rules:
+          - Id: DeleteOldLogs
+            Status: Enabled
+            ExpirationInDays: 90
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+
+  # S3 Bucket for detailed reports
+  ReportsBucket:
+    Type: AWS::S3::Bucket
+    DependsOn: AccessLogsBucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub 'cost-detective-reports-${AWS::AccountId}'
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LoggingConfiguration:
+        DestinationBucketName: !Ref AccessLogsBucket
+        LogFilePrefix: reports-bucket/
+      LifecycleConfiguration:
+        Rules:
           - Id: DeleteOldReports
             Status: Enabled
             ExpirationInDays: 90
+          - Id: TransitionOldVersions
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 30
+
+  # SQS Dead Letter Queue for failed Lambda invocations
+  LambdaDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: cost-detective-dlq
+      MessageRetentionPeriod: 1209600  # 14 days
+      KmsMasterKeyId: alias/aws/sqs
+      Tags:
+        - Key: Application
+          Value: cost-anomaly-detective
+        - Key: Environment
+          Value: production
+        - Key: ManagedBy
+          Value: CloudFormation
+        - Key: Purpose
+          Value: dead-letter-queue
+
+  # SNS Topic for DLQ alerts
+  DLQAlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: Cost Detective DLQ Alerts
+      KmsMasterKeyId: alias/aws/sns
+      Subscriptions:
+        - Endpoint: !Ref AlertEmail
+          Protocol: email
 
   # SNS Topic for email alerts
   AlertTopic:
     Type: AWS::SNS::Topic
     Properties:
       DisplayName: Cost Anomaly Alerts
+      KmsMasterKeyId: alias/aws/sns
       Subscriptions:
         - Endpoint: !Ref AlertEmail
           Protocol: email
@@ -137,7 +247,8 @@ Resources:
                 Action:
                   - logs:StartQuery
                   - logs:GetQueryResults
-                Resource: '*'
+                Resource:
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*'
 
               # DynamoDB
               - Effect: Allow
@@ -169,22 +280,45 @@ Resources:
                   - !Sub 'arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.claude-sonnet-4-6'
                   - !Sub 'arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.*'
 
+              # Secrets Manager (for Slack webhook)
+              - !If
+                - HasSlackWebhook
+                - Effect: Allow
+                  Action:
+                    - secretsmanager:GetSecretValue
+                  Resource: !Ref SlackWebhookSecret
+                - !Ref AWS::NoValue
+
+              # SQS (for DLQ)
+              - Effect: Allow
+                Action:
+                  - sqs:SendMessage
+                Resource: !GetAtt LambdaDLQ.Arn
+
   # Lambda Function (deployment package required)
   CostDetectiveFunction:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: cost-detective
+      Tags:
+        Application: cost-anomaly-detective
+        Environment: production
+        ManagedBy: CloudFormation
+        Purpose: anomaly-detection
       Runtime: python3.12
       Handler: lambda_function.lambda_handler
       Role: !GetAtt LambdaExecutionRole.Arn
       Timeout: 300
       MemorySize: 1024
+      DeadLetterConfig:
+        TargetArn: !GetAtt LambdaDLQ.Arn
+      ReservedConcurrentExecutions: 5
       Environment:
         Variables:
           DYNAMODB_TABLE_NAME: !Ref AnomalyHistoryTable
           S3_BUCKET_NAME: !Ref ReportsBucket
           SNS_TOPIC_ARN: !Ref AlertTopic
-          SLACK_WEBHOOK_URL: !If [HasSlackWebhook, !Ref SlackWebhookUrl, '']
+          SLACK_WEBHOOK_SECRET_ARN: !If [HasSlackWebhook, !Ref SlackWebhookSecret, '']
           THRESHOLD_PERCENTAGE: !Ref ThresholdPercentage
           BEDROCK_REGION: !Ref AWS::Region
           LOG_LEVEL: INFO
@@ -204,6 +338,12 @@ Resources:
       Targets:
         - Arn: !GetAtt CostDetectiveFunction.Arn
           Id: CostDetectiveTarget
+          RoleArn: !GetAtt EventBridgeDLQRole.Arn
+          RetryPolicy:
+            MaximumRetryAttempts: 2
+            MaximumEventAge: 3600
+          DeadLetterConfig:
+            Arn: !GetAtt LambdaDLQ.Arn
 
   # Permission for EventBridge to invoke Lambda
   LambdaInvokePermission:
@@ -213,6 +353,201 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: events.amazonaws.com
       SourceArn: !GetAtt ScheduleRule.Arn
+
+  # IAM Role for EventBridge to send to DLQ
+  EventBridgeDLQRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: SendToDLQ
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sqs:SendMessage
+                Resource: !GetAtt LambdaDLQ.Arn
+
+  # AWS Backup Plan for DynamoDB
+  BackupVault:
+    Type: AWS::Backup::BackupVault
+    Properties:
+      BackupVaultName: cost-detective-backup-vault
+      EncryptionKeyArn: !Sub 'arn:aws:kms:${AWS::Region}:${AWS::AccountId}:alias/aws/backup'
+
+  BackupPlan:
+    Type: AWS::Backup::BackupPlan
+    Properties:
+      BackupPlan:
+        BackupPlanName: cost-detective-daily-backup
+        BackupPlanRule:
+          - RuleName: DailyBackup
+            TargetBackupVault: !Ref BackupVault
+            ScheduleExpression: 'cron(0 5 * * ? *)'  # Daily at 5 AM UTC
+            StartWindowMinutes: 60
+            CompletionWindowMinutes: 120
+            Lifecycle:
+              DeleteAfterDays: 35
+              MoveToColdStorageAfterDays: 7
+
+  BackupSelection:
+    Type: AWS::Backup::BackupSelection
+    Properties:
+      BackupPlanId: !Ref BackupPlan
+      BackupSelection:
+        SelectionName: cost-detective-resources
+        IamRoleArn: !GetAtt BackupRole.Arn
+        Resources:
+          - !GetAtt AnomalyHistoryTable.Arn
+        Conditions:
+          StringEquals:
+            - ConditionKey: 'aws:ResourceTag/Application'
+              ConditionValue: 'cost-anomaly-detective'
+
+  BackupRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: backup.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup
+        - arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores
+
+  # AWS Budget for cost monitoring
+  CostBudget:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetName: cost-detective-monthly-budget
+        BudgetType: COST
+        TimeUnit: MONTHLY
+        BudgetLimit:
+          Amount: !Ref MonthlyBudgetLimit
+          Unit: USD
+        CostFilters:
+          TagKeyValue:
+            - 'user:Application$cost-anomaly-detective'
+        CostTypes:
+          IncludeTax: true
+          IncludeSubscription: true
+          UseBlended: false
+      NotificationsWithSubscribers:
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref AlertEmail
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 100
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref AlertEmail
+        - Notification:
+            NotificationType: FORECASTED
+            ComparisonOperator: GREATER_THAN
+            Threshold: 100
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref AlertEmail
+
+  # CloudWatch Alarm for Lambda Errors
+  LambdaErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: cost-detective-lambda-errors
+      AlarmDescription: Alert when Lambda function fails
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref CostDetectiveFunction
+      AlarmActions:
+        - !Ref DLQAlarmTopic
+      TreatMissingData: notBreaching
+
+  # CloudWatch Alarm for Lambda Throttles
+  LambdaThrottleAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: cost-detective-lambda-throttles
+      AlarmDescription: Alert when Lambda function is throttled
+      MetricName: Throttles
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref CostDetectiveFunction
+      AlarmActions:
+        - !Ref DLQAlarmTopic
+      TreatMissingData: notBreaching
+
+  # CloudWatch Alarm for DLQ Messages
+  DLQMessageAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: cost-detective-dlq-messages
+      AlarmDescription: Alert when messages appear in DLQ
+      MetricName: ApproximateNumberOfMessagesVisible
+      Namespace: AWS/SQS
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: QueueName
+          Value: !GetAtt LambdaDLQ.QueueName
+      AlarmActions:
+        - !Ref DLQAlarmTopic
+      TreatMissingData: notBreaching
+
+  # CloudWatch Alarm for Lambda Duration
+  LambdaDurationAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: cost-detective-lambda-duration
+      AlarmDescription: Alert when Lambda execution approaches timeout
+      MetricName: Duration
+      Namespace: AWS/Lambda
+      Statistic: Maximum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 270000  # 270 seconds (90% of 300s timeout)
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref CostDetectiveFunction
+      AlarmActions:
+        - !Ref DLQAlarmTopic
+      TreatMissingData: notBreaching
 
 Outputs:
   LambdaFunctionArn:

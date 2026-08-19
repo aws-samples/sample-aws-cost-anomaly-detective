@@ -23,13 +23,37 @@ Resources:
             Condition:
               StringEquals:
                 sts:ExternalId: 'cost-detective-deploy-2026'
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/PowerUserAccess
       Policies:
-        - PolicyName: IAMPassRoleForLambda
+        - PolicyName: CloudFormationDeploymentPolicy
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
+              # CloudFormation
+              - Effect: Allow
+                Action:
+                  - cloudformation:CreateStack
+                  - cloudformation:UpdateStack
+                  - cloudformation:DeleteStack
+                  - cloudformation:DescribeStacks
+                  - cloudformation:DescribeStackEvents
+                  - cloudformation:DescribeStackResources
+                  - cloudformation:GetTemplate
+                  - cloudformation:ValidateTemplate
+                Resource: !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stack/cost-detective*/*'
+
+              # Lambda
+              - Effect: Allow
+                Action:
+                  - lambda:CreateFunction
+                  - lambda:DeleteFunction
+                  - lambda:UpdateFunctionCode
+                  - lambda:UpdateFunctionConfiguration
+                  - lambda:GetFunction
+                  - lambda:AddPermission
+                  - lambda:RemovePermission
+                Resource: !Sub 'arn:aws:lambda:*:${AWS::AccountId}:function:cost-detective*'
+
+              # IAM (scoped to cost-detective resources)
               - Effect: Allow
                 Action:
                   - iam:CreateRole
@@ -41,12 +65,61 @@ Resources:
                   - iam:GetRole
                   - iam:GetRolePolicy
                   - iam:PassRole
-                  - iam:CreatePolicy
-                  - iam:DeletePolicy
-                  - iam:GetPolicy
-                  - iam:GetPolicyVersion
-                  - iam:ListPolicyVersions
-                Resource: '*'
+                Resource:
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cost-detective*'
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/CostDetective*'
+
+              # DynamoDB
+              - Effect: Allow
+                Action:
+                  - dynamodb:CreateTable
+                  - dynamodb:DeleteTable
+                  - dynamodb:DescribeTable
+                  - dynamodb:UpdateTable
+                  - dynamodb:UpdateContinuousBackups
+                Resource: !Sub 'arn:aws:dynamodb:*:${AWS::AccountId}:table/cost-anomalies*'
+
+              # S3
+              - Effect: Allow
+                Action:
+                  - s3:CreateBucket
+                  - s3:DeleteBucket
+                  - s3:PutBucketPolicy
+                  - s3:PutBucketEncryption
+                  - s3:PutBucketPublicAccessBlock
+                  - s3:PutLifecycleConfiguration
+                  - s3:GetBucketLocation
+                Resource: !Sub 'arn:aws:s3:::cost-detective-reports-${AWS::AccountId}'
+
+              # SNS
+              - Effect: Allow
+                Action:
+                  - sns:CreateTopic
+                  - sns:DeleteTopic
+                  - sns:Subscribe
+                  - sns:Unsubscribe
+                  - sns:SetTopicAttributes
+                  - sns:GetTopicAttributes
+                Resource: !Sub 'arn:aws:sns:*:${AWS::AccountId}:*cost-anomaly*'
+
+              # EventBridge
+              - Effect: Allow
+                Action:
+                  - events:PutRule
+                  - events:DeleteRule
+                  - events:DescribeRule
+                  - events:PutTargets
+                  - events:RemoveTargets
+                Resource: !Sub 'arn:aws:events:*:${AWS::AccountId}:rule/*cost-detective*'
+
+              # Secrets Manager
+              - Effect: Allow
+                Action:
+                  - secretsmanager:CreateSecret
+                  - secretsmanager:DeleteSecret
+                  - secretsmanager:UpdateSecret
+                  - secretsmanager:GetSecretValue
+                Resource: !Sub 'arn:aws:secretsmanager:*:${AWS::AccountId}:secret:cost-detective*'
       MaxSessionDuration: 3600
 
 Outputs:
